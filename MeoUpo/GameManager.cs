@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeoUpo
 {
@@ -19,9 +17,11 @@ namespace MeoUpo
             player = new Player();
             ai = new AI();
             DistributeCards();
+            DisplayStartingCard(); // Hiển thị lá bắt đầu
             DisplayCards(player, "Người chơi");
             DisplayCards(ai, "AI");
             DisplaySelectedActionCards(); // Hiển thị các thẻ hành động được lấy ra
+            
         }
         private void DistributeCards()
         {
@@ -49,7 +49,8 @@ namespace MeoUpo
             Console.WriteLine($"{playerName} có các thẻ sau:");
             foreach (var card in player.Hand)
             {
-                Console.WriteLine($"Loại: {card.Type} - Màu: {card.Color} - Giá trị: {card.Value}");
+                string colorName = Enum.GetName(typeof(ColorCard), card.Color);
+                Console.WriteLine($"Loại: {card.Type} - Màu: {colorName} - Giá trị: {card.Value}");
             }
             Console.WriteLine(); // Thêm dòng trống cho dễ đọc
         }
@@ -59,6 +60,20 @@ namespace MeoUpo
             foreach (var actionCard in selectedActionCards)
             {
                 Console.WriteLine(actionCard.ToString());
+            }
+            Console.WriteLine(); // Thêm dòng trống cho dễ đọc
+        }
+        private void DisplayStartingCard()
+        {
+            Console.WriteLine("Lá bắt đầu:");
+            if (deck.StartingCard != null)
+            {
+                string colorName = Enum.GetName(typeof(ColorCard), deck.StartingCard.Color);
+                Console.WriteLine($"Loại: {deck.StartingCard.Type} - Màu: {colorName} - Giá trị: {deck.StartingCard.Value}");
+            }
+            else
+            {
+                Console.WriteLine("Không có lá bắt đầu.");
             }
             Console.WriteLine(); // Thêm dòng trống cho dễ đọc
         }

@@ -8,11 +8,11 @@ namespace MeoUpo
 {
     internal class Card
     {
-        public string Color { get; set; }
+        public ColorCard Color { get; set; }
         public int Value { get; set; }
         public string Type { get; set; }
         public Card() { }
-        public Card(string color, int value, string type)
+        public Card(ColorCard color, int value, string type)
         {
             Color = color;
             Value = value;

@@ -15,7 +15,7 @@ namespace MeoUpo
         public int Points { get; set; }
         public string ActionDescription { get; set; }
         public CardAction() { }
-        public CardAction(string color, int value, string type, string name, int price, int points, string actionDescription) : base(color, value, type)
+        public CardAction(ColorCard color, int value, string type, string name, int price, int points, string actionDescription) : base(color, value, type)
         {
             Name = name;
             Price = price;

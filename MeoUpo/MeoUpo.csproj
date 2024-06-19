@@ -46,8 +46,17 @@
     <Compile Include="AI.cs" />
     <Compile Include="Card.cs" />
     <Compile Include="CardAction.cs" />
+    <Compile Include="CardActs\MarryActionCommand.cs" />
+    <Compile Include="CardPriceAction\CardPriceActionInvoker.cs" />
+    <Compile Include="CardPriceAction\ConvertCardsToMoneyCommand.cs" />
+    <Compile Include="CardPriceAction\ConvertHandCardsToMoney.cs" />
+    <Compile Include="CardPriceAction\DrawCardCommand.cs" />
+    <Compile Include="CardPriceAction\ICommand.cs" />
+    <Compile Include="CardPriceAction\StealMoneyFromOpponent.cs" />
+    <Compile Include="ColorCard.cs" />
     <Compile Include="Deck.cs" />
     <Compile Include="GameManager.cs" />
+    <Compile Include="IActionCommand.cs" />
     <Compile Include="Run.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

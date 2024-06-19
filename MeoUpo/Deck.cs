@@ -10,16 +10,34 @@ namespace MeoUpo
     {
         public List<Card> Cards { get; set; } = new List<Card>();
         public List<CardAction> CardActions { get; set; } = new List<CardAction>();
+        public Card StartingCard { get; private set; }
         public Deck()
         {
             InitPriceCard();
+            GetStartingCard();
             InitActionCard();
             InitDebtCard();
             Shuffle();
         }
+
+        public Card DrawCard()
+        {
+            if (Cards.Count > 0)
+            {
+                int index = new Random().Next(Cards.Count);
+                Card card = Cards[index];
+                Cards.RemoveAt(index);
+                return card;
+            }
+            else
+                return null;
+        }
+
+
+
         private void InitPriceCard()
         {
-            string[] colors = { "xanh", "tím", "vàng", "lam" };
+            ColorCard[] colors = { ColorCard.XANH, ColorCard.TIM, ColorCard.VANG, ColorCard.LAM };
             foreach (var c in colors)
             {
                 for (int i = 1; i <= 5; i++)
@@ -32,13 +50,37 @@ namespace MeoUpo
                 }
             }
         }
+        private void GetStartingCard()
+        {
+            // Tạo danh sách tạm thời cho PriceCard
+            List<Card> priceCards = Cards.Where(c => c.Type == "Tài chính").ToList(); // Thêm dòng này để lấy tất cả thẻ tài chính
+            // Xáo trộn danh sách PriceCard
+            Shuffle(priceCards);
+
+            // Chọn một lá bài ngẫu nhiên từ danh sách đã xáo trộn làm lá khởi đầu
+            Card startingCard = priceCards.FirstOrDefault(); // Lấy lá đầu tiên sau khi xáo trộn
+
+            StartingCard = startingCard; // Lưu trữ lá bắt đầu
+            if (startingCard != null)
+            {
+                // Thêm lá khởi đầu vào danh sách Cards
+                Cards.Add(startingCard);
+
+                // Loại bỏ lá khởi đầu khỏi danh sách tạm thời để tránh thêm nó lần nữa
+                priceCards.Remove(startingCard);
+            }
+            // Thêm phần còn lại của PriceCard vào danh sách Cards
+            Cards.AddRange(priceCards);
+
+
+        }
         private void InitDebtCard()
         {
             for (int value = 1; value <= 5; value++)
             {
                 for (int i = 0; i < 3; i++) // Mỗi giá trị có 3 thẻ nợ
                 {
-                    Cards.Add(new Card("đỏ", value, "Nợ"));
+                    Cards.Add(new Card(ColorCard.DO, value, "Nợ"));
                 }
             }
         }
@@ -46,18 +88,18 @@ namespace MeoUpo
         {
             List<CardAction> tempActions = new List<CardAction>
             {
-                new CardAction(null, 0, "Hành Động", name: "Kết hôn", price: 5, points: 10, "Sau khi mua lá này, nhận tiền bằng số tiền bạn đang sở hữu"),
-                new CardAction(null, 0, "Hành Động", name: "Em bé", price: 5, points: 12, "Ở cuối mỗi trò chơi, mỗi lá Nợ của bạn sẽ trừ 5 điểm thay vì 3"),
-                new CardAction(null, 0, "Hành Động", name: "Heo đất", price: 5, points: 7, "Mỗi khi trả nợ, bạn tốn ít hơn 1 tiền"),
-                new CardAction(null, 0, "Hành Động", name: "Bảo hiểm", price: 5, points: 7, "Mỗi khi đánh lá xanh dương bạn được rút thêm 3 lá từ chồng bài"),
-                new CardAction(null, 0, "Hành Động", name: "Công ty", price: 7, points: 10, "Mỗi khi bạn đánh lá vàng, bạn được nhận thêm 2 tiền"),
-                new CardAction(null, 0, "Hành Động", name: "Nổi tiếng", price: 7, points: 10, "Một lần duy nhất, giảm 3 tiền khi mua lá hành động"),
-                new CardAction(null, 0, "Hành Động", name: "Khách sạn", price: 7, points: 10, "Mỗi lần đánh trùng số, bạn nhận thêm 1 điểm"),
-                new CardAction(null, 0, "Hành Động", name: "Máy bay", price: 7, points: 5, "Mỗi lượt bạn có thể đánh 2 lá liên tiếp"),
-                new CardAction(null, 0, "Hành Động", name: "Từ thiện", price: 7, points: 10, "Sau khi mua lá bài này, lập tức bỏ 1 lá bài nợ bất kì trên tay"),
-                new CardAction(null, 0, "Hành Động", name: "Nhà", price: 7, points: 10, "Mỗi khi đánh lá xanh dương bạn được hạ thêm 3 lá từ chồng bài trên tay"),
-                new CardAction(null, 0, "Hành Động", name: "Hạnh phúc", price: 10, points: 15, "Ở cuối mỗi trò chơi, mỗi lá hành động khác sẽ được cộng thêm 3 điểm"),
-                new CardAction(null, 0, "Hành Động", name: "Nghỉ dưỡng", price: 10, points: 15, "Ở cuối trò chơi, mỗi lá tài chính trên tay sẽ không bị trừ điểm"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Kết hôn", price: 5, points: 10, "Sau khi mua lá này, nhận tiền bằng số tiền bạn đang sở hữu"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Em bé", price: 5, points: 12, "Ở cuối mỗi trò chơi, mỗi lá Nợ của bạn sẽ trừ 5 điểm thay vì 3"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Heo đất", price: 5, points: 7, "Mỗi khi trả nợ, bạn tốn ít hơn 1 tiền"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Bảo hiểm", price: 5, points: 7, "Mỗi khi đánh lá xanh dương bạn được rút thêm 3 lá từ chồng bài"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Công ty", price: 7, points: 10, "Mỗi khi bạn đánh lá vàng, bạn được nhận thêm 2 tiền"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Nổi tiếng", price: 7, points: 10, "Một lần duy nhất, giảm 3 tiền khi mua lá hành động"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Khách sạn", price: 7, points: 10, "Mỗi lần đánh trùng số, bạn nhận thêm 1 điểm"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Máy bay", price: 7, points: 5, "Mỗi lượt bạn có thể đánh 2 lá liên tiếp"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Từ thiện", price: 7, points: 10, "Sau khi mua lá bài này, lập tức bỏ 1 lá bài nợ bất kì trên tay"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Nhà", price: 7, points: 10, "Mỗi khi đánh lá xanh dương bạn được hạ thêm 3 lá từ chồng bài trên tay"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Hạnh phúc", price: 10, points: 15, "Ở cuối mỗi trò chơi, mỗi lá hành động khác sẽ được cộng thêm 3 điểm"),
+                new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Nghỉ dưỡng", price: 10, points: 15, "Ở cuối trò chơi, mỗi lá tài chính trên tay sẽ không bị trừ điểm"),
             };
 
             // Xáo trộn danh sách tempActions
@@ -87,12 +129,11 @@ namespace MeoUpo
                 CardActions.Add(new CardAction(ac.Color, ac.Value, ac.Type, ac.Name, ac.Price, ac.Points, ac.ActionDescription));
             }
 
-            CardActions.Add(new CardAction(null, 0, "Hành Động", name: "Tự do 1", price: 99, points: 10, "Người đầu tiên trả nợ xong sẽ lập tức nhận thẻ này"));
-            CardActions.Add(new CardAction(null, 0, "Hành Động", name: "Tự do 2", price: 99, points: 5, "Người thứ 2 trả nợ xong sẽ lập tức nhận thẻ này"));
+            CardActions.Add(new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Tự do 1", price: 99, points: 10, "Người đầu tiên trả nợ xong sẽ lập tức nhận thẻ này"));
+            CardActions.Add(new CardAction(ColorCard.NONE, 0, "Hành Động", name: "Tự do 2", price: 99, points: 5, "Người thứ 2 trả nợ xong sẽ lập tức nhận thẻ này"));
 
             CardActions.Sort((action1, action2) => action1.Name.CompareTo(action2.Name));
         }
-
         public void Shuffle()
         {
             Random rng = new Random();
@@ -112,5 +153,6 @@ namespace MeoUpo
                 list[n] = value;
             }
         }
+
     }
 }
