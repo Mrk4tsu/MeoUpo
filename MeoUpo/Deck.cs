@@ -60,34 +60,37 @@ namespace MeoUpo
                 new CardAction(null, 0, "Hành Động", name: "Nghỉ dưỡng", price: 10, points: 15, "Ở cuối trò chơi, mỗi lá tài chính trên tay sẽ không bị trừ điểm"),
             };
 
-            Random rng = new Random();
+            // Xáo trộn danh sách tempActions
+            Shuffle(tempActions);
 
             // Xử lý cho thẻ giá 5 tiền
-            var selectedActions5 = tempActions.Where(a => a.Price == 5).OrderBy(x => rng.Next()).Take(3).ToList();
+            var selectedActions5 = tempActions.Where(a => a.Price == 5).Take(3).ToList();
             foreach (var action in selectedActions5)
             {
-                CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
+                CardActions.Add(action);
                 CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
             }
 
             // Xử lý cho thẻ giá 7 tiền
-            var selectedActions7 = tempActions.Where(a => a.Price == 7).OrderBy(x => rng.Next()).Take(3).ToList();
+            var selectedActions7 = tempActions.Where(a => a.Price == 7).Take(3).ToList();
             foreach (var action in selectedActions7)
             {
-                CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
+                CardActions.Add(action);
                 CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
             }
 
             // Xử lý cho thẻ giá 10 tiền
-            var selectedAction10 = tempActions.Where(a => a.Price == 10).OrderBy(x => rng.Next()).Take(1).ToList();
-            foreach (var action in selectedAction10)
+            var selectedAction10 = tempActions.Where(a => a.Price == 10).Take(1).ToList();
+            foreach (var ac in selectedAction10)
             {
-                CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
-                CardActions.Add(new CardAction(action.Color, action.Value, action.Type, action.Name, action.Price, action.Points, action.ActionDescription));
+                CardActions.Add(ac);
+                CardActions.Add(new CardAction(ac.Color, ac.Value, ac.Type, ac.Name, ac.Price, ac.Points, ac.ActionDescription));
             }
 
             CardActions.Add(new CardAction(null, 0, "Hành Động", name: "Tự do 1", price: 99, points: 10, "Người đầu tiên trả nợ xong sẽ lập tức nhận thẻ này"));
             CardActions.Add(new CardAction(null, 0, "Hành Động", name: "Tự do 2", price: 99, points: 5, "Người thứ 2 trả nợ xong sẽ lập tức nhận thẻ này"));
+
+            CardActions.Sort((action1, action2) => action1.Name.CompareTo(action2.Name));
         }
 
         public void Shuffle()
@@ -95,6 +98,19 @@ namespace MeoUpo
             Random rng = new Random();
             Cards = Cards.OrderBy(a => rng.Next()).ToList();// Xáo trộn thẻ tài chính
             CardActions = CardActions.OrderBy(a => rng.Next()).ToList(); // Xáo trộn thẻ hành động
+        }
+        private void Shuffle<T>(IList<T> list)
+        {
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }

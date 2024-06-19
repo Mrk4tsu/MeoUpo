@@ -38,7 +38,7 @@ namespace MeoUpo
             selectedActionCards = deck.CardActions
                 .Where(c => c.Price == 5).Take(6)
                 .Concat(deck.CardActions.Where(c => c.Price == 7).Take(6))
-                .Concat(deck.CardActions.Where(c => c.Price == 10).Take(1))
+                .Concat(deck.CardActions.Where(c => c.Price == 10).Take(2))
                 .ToList();
 
             // Thêm 2 thẻ 'Tự do' vào danh sách thẻ hành động đã chọn
@@ -58,7 +58,7 @@ namespace MeoUpo
             Console.WriteLine("Các thẻ hành động được lấy ra:");
             foreach (var actionCard in selectedActionCards)
             {
-                Console.WriteLine($"Hành Động: {actionCard.Name} - Giá: {actionCard.Price} - Điểm: {actionCard.Points} - Mô tả: {actionCard.ActionDescription}");
+                Console.WriteLine(actionCard.ToString());
             }
             Console.WriteLine(); // Thêm dòng trống cho dễ đọc
         }

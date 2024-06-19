@@ -8,7 +8,7 @@ namespace MeoUpo
 {
     internal class Run
     {
-       public static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Khởi tạo trò chơi MeoUpo...");

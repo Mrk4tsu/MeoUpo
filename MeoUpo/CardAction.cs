@@ -22,5 +22,9 @@ namespace MeoUpo
             Points = points;
             ActionDescription = actionDescription;
         }
+        public override string ToString()
+        {
+            return $"Hành Động: {Name} - Giá: {Price} - Điểm: {Points} - Mô tả: {ActionDescription}";
+        }
     }
 }
