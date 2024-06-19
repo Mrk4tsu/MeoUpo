@@ -10,7 +10,7 @@ namespace MeoUpo
     {
         public List<Card> Cards { get; set; } = new List<Card>();
         public List<CardAction> CardActions { get; set; } = new List<CardAction>();
-        public Card StartingCard { get; private set; }
+        public Card StartingCard { get; set; }
         public Deck()
         {
             InitPriceCard();
@@ -49,6 +49,10 @@ namespace MeoUpo
                     }
                 }
             }
+        }
+        public void UpdateStartingCard(Card newCard)
+        {
+            StartingCard = newCard;
         }
         private void GetStartingCard()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace MeoUpo
@@ -23,6 +24,24 @@ namespace MeoUpo
             DisplaySelectedActionCards(); // Hiển thị các thẻ hành động được lấy ra
             
         }
+        // Phương thức cho phép người chơi bốc bài
+        public void PlayerDrawCard()
+        {
+            if (deck.Cards.Count > 0) // Kiểm tra xem bộ bài còn thẻ không
+            {
+                Card drawnCard = deck.DrawCard(); // Bốc một thẻ từ bộ bài
+                if (drawnCard != null)
+                {
+                    player.Hand.Add(drawnCard); // Thêm thẻ vào tay người chơi
+                                                // Hiển thị thông tin thẻ
+                    Console.WriteLine($"Người chơi đã bốc được thẻ: Loại - {drawnCard.Type}, Màu - {drawnCard.Color}, Giá trị - {drawnCard.Value}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Bộ bài đã hết thẻ.");
+            }
+        }
         private void DistributeCards()
         {
             // Phân phối 5 thẻ giá và 3 thẻ nợ cho mỗi người
@@ -44,7 +63,40 @@ namespace MeoUpo
             // Thêm 2 thẻ 'Tự do' vào danh sách thẻ hành động đã chọn
             selectedActionCards.AddRange(deck.CardActions.Where(c => c.Name.Contains("Tự do")));
         }
-        private void DisplayCards(Player player, string playerName)
+        public void PlayerPlayCard()
+        {
+            // Giả sử người chơi chọn thẻ thông qua một giao diện người dùng hoặc đầu vào từ bàn phím
+            Console.WriteLine("Chọn thẻ để đánh (nhập chỉ số thẻ):");
+            for (int i = 0; i < player.Hand.Count; i++)
+            {
+                Card card = player.Hand[i];
+                Console.WriteLine($"{i}: Loại - {card.Type}, Màu - {card.Color}, Giá trị - {card.Value}");
+            }
+
+            int cardIndex;
+            if (int.TryParse(Console.ReadLine(), out cardIndex) && cardIndex >= 0 && cardIndex < player.Hand.Count)
+            {
+                Card selectedCard = player.Hand[cardIndex];
+                // Sử dụng phương thức CanPlayCard để kiểm tra xem thẻ có thể đánh không
+                if (player.CanPlayCard(selectedCard, player, ai, deck, deck.StartingCard)) // Sử dụng đối tượng AI như là đối thủ
+                {
+                    // Cập nhật StartingCard trong deck với thẻ mới được chơi
+                    deck.UpdateStartingCard(selectedCard);
+                    player.PlayCard(selectedCard, ai, deck); // Đánh thẻ với AI như là đối thủ
+                    Console.WriteLine($"Đã đánh thẻ: Loại - {selectedCard.Type}, Màu - {selectedCard.Color}, Giá trị - {selectedCard.Value}");
+                }
+                else
+                {
+                    Console.WriteLine("Không thể đánh thẻ này.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Lựa chọn không hợp lệ.");
+            }
+        }
+    
+    private void DisplayCards(Player player, string playerName)
         {
             Console.WriteLine($"{playerName} có các thẻ sau:");
             foreach (var card in player.Hand)
